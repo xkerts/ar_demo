@@ -97,16 +97,41 @@ useHead({
   ]
 })
 
+// Composables
+const { fetchProducts, getCategories } = useProductData()
+
 // State
-const products = ref<Product[]>([])
-const loading = ref(true)
-const error = ref<string>()
-const categories = ref<string[]>([])
 const selectedCategory = ref<string>()
 const isWebXRSupported = ref(true)
 
-// Composables
-const { fetchProducts, getCategories } = useProductData()
+// Fetch products using useAsyncData for proper SSR support
+const { data: productsData, error, pending: loading, refresh } = await useAsyncData(
+  'products',
+  async () => {
+    try {
+      const [productsResponse, categoriesData] = await Promise.all([
+        fetchProducts(),
+        getCategories()
+      ])
+
+      return {
+        products: productsResponse.products,
+        categories: categoriesData
+      }
+    } catch (e) {
+      console.error('Error loading products:', e)
+      throw e
+    }
+  },
+  {
+    server: true, // Run on server-side
+    lazy: false   // Don't lazy load
+  }
+)
+
+// Extract data from response
+const products = computed(() => productsData.value?.products || [])
+const categories = computed(() => productsData.value?.categories || [])
 
 // Computed
 const displayProducts = computed(() => {
@@ -117,24 +142,10 @@ const displayProducts = computed(() => {
 })
 
 /**
- * Load products from API/composable
+ * Reload products
  */
-const loadProducts = async () => {
-  try {
-    loading.value = true
-    error.value = undefined
-
-    const response = await fetchProducts()
-    products.value = response.products
-
-    // Load categories
-    categories.value = await getCategories()
-  } catch (e) {
-    error.value = e instanceof Error ? e.message : 'Failed to load products'
-    console.error('Error loading products:', e)
-  } finally {
-    loading.value = false
-  }
+const loadProducts = () => {
+  refresh()
 }
 
 /**
@@ -166,9 +177,8 @@ const checkWebXRSupport = () => {
   }
 }
 
-// Lifecycle
+// Lifecycle - only check WebXR support on client
 onMounted(() => {
-  loadProducts()
   checkWebXRSupport()
 })
 </script>
