@@ -51,6 +51,6 @@ export default defineNuxtConfig({
 
   // Nitro server configuration
   nitro: {
-    preset: 'node-server'
+    preset: 'netlify'
   }
 })

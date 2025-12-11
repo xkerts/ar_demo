@@ -26,3 +26,11 @@ logs
 # Certificates
 certificates/
 *.pem
+
+#other files
+CLOUDFLARE_DNS_SETUP.md
+DEPLOYMENT.md
+ENVIRONMENT_SETUP.md
+IMPLEMENTATION_REPORT.md
+it.md
+NETLIFY_FIX.md

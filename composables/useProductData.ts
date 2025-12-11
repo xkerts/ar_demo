@@ -21,11 +21,26 @@ const mockProducts: Product[] = [
     price: 5.99
   },
   {
-    id: '1',
+    id: '2',
     name: 'Nachos',
     description: 'Nachos con queso. Serves 2 people.',
     imageUrl: '/images/redVelvet.jpg',
-    modelUrl: '/models/redVelvet.glb',
+    modelUrl: '/models/nachos.glb',
+    scale: 1.0,
+    dimensions: {
+      width: 0.8,
+      height: 0.9,
+      depth: 0.85
+    },
+    category: 'Dessert',
+    price: 5.99
+  },
+  {
+    id: '3',
+    name: 'Sushi',
+    description: 'Nachos con queso. Serves 2 people.',
+    imageUrl: '/images/redVelvet.jpg',
+    modelUrl: '/models/cielomar.glb',
     scale: 1.0,
     dimensions: {
       width: 0.8,
